@@ -76,6 +76,18 @@ module Am2909Test();
         `assert(Y, 4'b0000)
     end
 
+    // Direct Inputs (D) should be redirected to Y if S is 11 (async).
+    initial begin
+        #500
+        `testSetup
+        S = 2'b11;
+        D = 4'b0101;
+        #1
+        `assert(Y, 4'b0101)
+        #19
+        `assert(Y, 4'b0101)
+    end
+
     initial begin
         #1000
         $finish;

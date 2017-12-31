@@ -35,6 +35,6 @@ module Am2909(
     end
 
     // Multiplexer
-    assign Y = (S == 2'b01) ? address_register : 4'b000;
+    assign Y = (S == 2'b01) ? address_register : ((S == 2'b11) ? D : 4'b000);
 
 endmodule
