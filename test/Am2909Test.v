@@ -9,7 +9,7 @@
     RE = 1'b0; \
     D = 4'b0000; \
     R = 4'b0000; \
-    S = 2'b00; \
+    S = 2'b11; \
     OE = 1'b0; \
     CP = 1'b0; \
     OR = 4'b0000; \
@@ -86,6 +86,19 @@ module Am2909Test();
         `assert(Y, 4'b0101)
         #19
         `assert(Y, 4'b0101)
+    end
+
+    // Microprogram register should increment at posedge of CP.
+    initial begin
+        #600
+        `testSetup
+        S = 2'b00;
+        #1
+        `assert(Y, 4'b0001)
+        #20
+        `assert(Y, 4'b0010)
+        #20
+        `assert(Y, 4'b0011)
     end
 
     initial begin

@@ -26,6 +26,12 @@ module Am2909(
     );
 
     reg [3:0] address_register;
+    reg [3:0] microprogram_counter;
+    wire [3:0] incremented;
+
+    always @ (posedge CP) begin
+        microprogram_counter <= incremented;
+    end
 
     always @ (posedge CP) begin
         // Address Register
@@ -35,6 +41,9 @@ module Am2909(
     end
 
     // Multiplexer
-    assign Y = (S == 2'b01) ? address_register : ((S == 2'b11) ? D : 4'b000);
+    assign Y = (S == 2'b00) ? microprogram_counter : ((S == 2'b01) ? address_register : ((S == 2'b11) ? D : 4'b0000));
+
+    // Incrementer
+    assign incremented = Y + 1;
 
 endmodule
