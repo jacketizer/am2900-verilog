@@ -13,7 +13,7 @@
     OE = 1'b0; \
     CP = 1'b0; \
     OR = 4'b0000; \
-    ZERO = 1'b0; \
+    ZERO = 1'b1; \
     C = 1'b0; \
     #20 RE = 1'b1; \
     #1
@@ -99,6 +99,24 @@ module Am2909Test();
         `assert(Y, 4'b0010)
         #20
         `assert(Y, 4'b0011)
+    end
+
+    // If ZERO is low, Y should be zero (async).
+    initial begin
+        #700
+        `testSetup
+        R = 4'b1111;
+        S = 2'b01;
+        RE = 1'b0;
+        #20
+        RE = 1'b1;
+        `assert(Y, 4'b1111)
+        #1
+        ZERO = 1'b0;
+        #1
+        `assert(Y, 4'b0000)
+        #20
+        `assert(Y, 4'b0000)
     end
 
     initial begin
