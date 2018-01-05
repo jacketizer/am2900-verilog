@@ -48,6 +48,6 @@ module Am2909(
     assign incremented = Y + 1;
 
     // Output Y
-    assign Y = (ZERO == 1'b0) ? 4'b0000 : before_output;
+    assign Y = (ZERO == 1'b0) ? 4'b0000 : before_output | OR;
 
 endmodule

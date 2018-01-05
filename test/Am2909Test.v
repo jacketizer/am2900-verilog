@@ -119,6 +119,44 @@ module Am2909Test();
         `assert(Y, 4'b0000)
     end
 
+    // If OR[i] is high, Y[i] should be high (async).
+    initial begin
+        #800
+        `testSetup
+        R = 4'b1010;
+        S = 2'b01;
+        RE = 1'b0;
+        #20
+        RE = 1'b1;
+        `assert(Y, 4'b1010)
+        #1
+        OR = 4'b1111;
+        #1
+        `assert(Y, 4'b1111)
+        #20
+        `assert(Y, 4'b1111)
+    end
+
+    // ZERO should have higher priority than OR.
+    initial begin
+        #900
+        `testSetup
+        R = 4'b0101;
+        S = 2'b01;
+        RE = 1'b0;
+        #20
+        RE = 1'b1;
+        `assert(Y, 4'b0101)
+        #1
+        OR = 4'b1111;
+        #1
+        `assert(Y, 4'b1111)
+        #1
+        ZERO = 1'b0;
+        #1
+        `assert(Y, 4'b0000)
+    end
+
     initial begin
         #1000
         $finish;
