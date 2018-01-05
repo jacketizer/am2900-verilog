@@ -157,8 +157,17 @@ module Am2909Test();
         `assert(Y, 4'b0000)
     end
 
+    // If OE is high, the Y outputs should be in high-impedance state.
     initial begin
         #1000
+        `testSetup
+        OE = 1'b1;
+        #1
+        `assert(Y, 4'bzzzz)
+    end
+
+    initial begin
+        #2000
         $finish;
     end
 endmodule
