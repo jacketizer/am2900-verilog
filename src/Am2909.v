@@ -68,7 +68,7 @@ module Am2909(
     assign before_output = (S == 2'b00) ? microprogram_counter : ((S == 2'b01) ? address_register : ((S == 2'b10) ? stack[stack_pointer] : ((S == 2'b11) ? D : 4'b0000)));
 
     // Incrementer
-    assign incremented = Y + 1;
+    assign incremented = Y + C;
 
     // Output Control
     assign Y = (OE == 1'b0) ? ((ZERO == 1'b0) ? 4'b0000 : before_output | OR) : 4'bzzzz;

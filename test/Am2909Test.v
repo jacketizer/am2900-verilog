@@ -14,7 +14,7 @@
     CP = 1'b0; \
     OR = 4'b0000; \
     ZERO = 1'b1; \
-    C = 1'b0; \
+    C = 1'b1; \
     #20 RE = 1'b1; \
     #1
 
@@ -88,7 +88,7 @@ module Am2909Test();
         `assert(Y, 4'b0101)
     end
 
-    // Microprogram register should increment at posedge of CP.
+    // Microprogram register should increment at posedge of CP if C is high.
     initial begin
         #600
         `testSetup
@@ -101,9 +101,23 @@ module Am2909Test();
         `assert(Y, 4'b0011)
     end
 
-    // If ZERO is low, Y should be zero (async).
+    // Microprogram register should not increment at posedge of CP if C is low.
     initial begin
         #700
+        `testSetup
+        S = 2'b00;
+        C = 1'b0;
+        #1
+        `assert(Y, 4'b0001)
+        #20
+        `assert(Y, 4'b0001)
+        #20
+        `assert(Y, 4'b0001)
+    end
+
+    // If ZERO is low, Y should be zero (async).
+    initial begin
+        #800
         `testSetup
         R = 4'b1111;
         S = 2'b01;
@@ -121,7 +135,7 @@ module Am2909Test();
 
     // If OR[i] is high, Y[i] should be high (async).
     initial begin
-        #800
+        #900
         `testSetup
         R = 4'b1010;
         S = 2'b01;
@@ -139,7 +153,7 @@ module Am2909Test();
 
     // ZERO should have higher priority than OR.
     initial begin
-        #900
+        #1000
         `testSetup
         R = 4'b0101;
         S = 2'b01;
@@ -159,7 +173,7 @@ module Am2909Test();
 
     // If OE is high, the Y outputs should be in high-impedance state.
     initial begin
-        #1000
+        #1100
         `testSetup
         OE = 1'b1;
         #1
@@ -168,7 +182,7 @@ module Am2909Test();
 
     // Test to push and pop stack.
     initial begin
-        #1100
+        #1200
         `testSetup
         R = 4'b0001;
         S = 2'b01;
