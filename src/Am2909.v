@@ -27,27 +27,50 @@ module Am2909(
 
     reg [3:0] address_register;
     reg [3:0] microprogram_counter;
+    reg [1:0] stack_pointer;
+    reg [3:0] stack [0:3];
+
     wire [3:0] incremented;
     wire [3:0] before_output;
 
+    initial begin
+        stack_pointer <= 2'b11;
+    end
+
+    // Clock in new uPC value
     always @ (posedge CP) begin
         microprogram_counter <= incremented;
     end
 
+    // Clock in Address Register values
     always @ (posedge CP) begin
-        // Address Register
         if (RE == 1'b0) begin
             address_register <= R;
         end
     end
 
+    // Pop or push stack
+    always @ (posedge CP) begin
+        if (FE == 1'b0) begin
+            if (PUP == 1'b1) begin
+                // PUSH
+                stack_pointer = stack_pointer + 1;
+                stack[stack_pointer] = microprogram_counter;
+            end
+            else begin
+                // POP
+                stack_pointer = stack_pointer - 1;
+            end
+        end
+    end
+
     // Multiplexer
-    assign before_output = (S == 2'b00) ? microprogram_counter : ((S == 2'b01) ? address_register : ((S == 2'b11) ? D : 4'b0000));
+    assign before_output = (S == 2'b00) ? microprogram_counter : ((S == 2'b01) ? address_register : ((S == 2'b10) ? stack[stack_pointer] : ((S == 2'b11) ? D : 4'b0000)));
 
     // Incrementer
     assign incremented = Y + 1;
 
-    // Output Y
+    // Output Control
     assign Y = (OE == 1'b0) ? ((ZERO == 1'b0) ? 4'b0000 : before_output | OR) : 4'bzzzz;
 
 endmodule

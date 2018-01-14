@@ -166,6 +166,62 @@ module Am2909Test();
         `assert(Y, 4'bzzzz)
     end
 
+    // Test to push and pop stack.
+    initial begin
+        #1100
+        `testSetup
+        R = 4'b0001;
+        S = 2'b01;
+        RE = 1'b0;
+        #20
+        `assert(Y, 4'b0001)
+        #20
+        `assert(Y, 4'b0001)
+        S = 2'b00;
+        #1
+        `assert(Y, 4'b0010)
+
+        // Push uPC
+        FE = 1'b0;
+        PUP = 1'b1;
+        #20
+        `assert(Y, 4'b0011)
+
+        // Push uPC again
+        #20
+        `assert(Y, 4'b0100)
+
+        // Push uPC again
+        #20
+        `assert(Y, 4'b0101)
+
+        // Push uPC again
+        #20
+        `assert(Y, 4'b0110)
+
+        // Stop pushing
+        FE = 1'b1;
+
+        // Let Y be STK0
+        S = 2'b10;
+        #1
+        `assert(Y, 4'b0101)
+
+        // Pop stack and assert outputs
+        FE = 1'b0;
+        PUP = 1'b0;
+        #20
+        `assert(Y, 4'b0100)
+
+        // Pop stack and assert outputs
+        #20
+        `assert(Y, 4'b0011)
+
+        // Pop stack and assert outputs
+        #20
+        `assert(Y, 4'b0010)
+    end
+
     initial begin
         #2000
         $finish;
